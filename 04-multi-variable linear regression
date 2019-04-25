@@ -1,0 +1,133 @@
+tf.set_random_seed(0)  # for reproducibility
+
+x1 = [ 73.,  93.,  89.,  96.,  73.]
+x2 = [ 80.,  88.,  91.,  98.,  66.]
+x3 = [ 75.,  93.,  90., 100.,  70.]
+Y  = [152., 185., 180., 196., 142.]
+#데이터를 준비
+
+# weights
+w1 = tf.Variable(10.)
+w2 = tf.Variable(10.)
+w3 = tf.Variable(10.)
+b  = tf.Variable(10.)
+#W와 b를 준비함
+
+hypothesis = w1 * x1 + w2 * x2 + w3 * x3 +b
+
+w1 = tf.Variable(tf.random_normal([1]))
+w2 = tf.Variable(tf.random_normal([1]))
+w3 = tf.Variable(tf.random_normal([1]))
+b  = tf.Variable(tf.random_normal([1]))
+#초기값을 1로 설정
+
+learning_rate = 0.000001
+
+for i in range(1000+1):
+    # tf.GradientTape() to record the gradient of the cost function
+    with tf.GradientTape() as tape: #tape에 변수를 기록
+        hypothesis = w1 * x1 +  w2 * x2 + w3 * x3 + b #hypothesis함수를 정의 
+        cost = tf.reduce_mean(tf.square(hypothesis - Y)) #cost 함수를 정의
+    # calculates the gradients of the cost
+    w1_grad, w2_grad, w3_grad, b_grad = tape.gradient(cost, [w1, w2, w3, b])
+    #변수들의 기울기를 구함
+
+    # update w1,w2,w3 and b
+    w1.assign_sub(learning_rate * w1_grad)
+    w2.assign_sub(learning_rate * w2_grad)
+    w3.assign_sub(learning_rate * w3_grad)
+    b.assign_sub(learning_rate * b_grad)
+    #learning_rate를 곱하여 각각 업데이트함
+    
+    if i % 50 == 0:
+      print("{:5} | {:12.4f}".format(i, cost.numpy()))
+    #i가 50이 될때마다 출력함
+    
+    0 | 5793889.5000
+   50 |   64291.1484
+  100 |     715.2902
+  150 |       9.8462
+  200 |       2.0152
+  250 |       1.9252
+  300 |       1.9210
+  350 |       1.9177
+  400 |       1.9145
+  450 |       1.9114
+  500 |       1.9081
+  550 |       1.9050
+  600 |       1.9018
+  650 |       1.8986
+  700 |       1.8955
+  750 |       1.8923
+  800 |       1.8892
+  850 |       1.8861
+  900 |       1.8829
+  950 |       1.8798
+ 1000 |       1.8767
+ 
+ #matrix 사용
+ ata = np.array([
+    # X1,   X2,    X3,   y
+    [ 73.,  80.,  75., 152. ],
+    [ 93.,  88.,  93., 185. ],
+    [ 89.,  91.,  90., 180. ],
+    [ 96.,  98., 100., 196. ],
+    [ 73.,  66.,  70., 142. ]
+], dtype=np.float32)
+
+# slice data
+X = data[:, :-1] #5행 3열짜리 데이터
+y = data[:, [-1]] #5행 1열 짜리 데이터
+
+W = tf.Variable(tf.random_normal([3, 1])) #3행1열 행렬
+b = tf.Variable(tf.random_normal([1])) 
+
+learning_rate = 0.000001
+
+# hypothesis, prediction function
+def predict(X):
+    return tf.matmul(X, W) + b 
+#predict함수를 정의 
+
+print("epoch | cost")
+
+n_epochs = 2000
+for i in range(n_epochs+1): #2001번 반복함
+    # tf.GradientTape() to record the gradient of the cost function
+    with tf.GradientTape() as tape:
+        cost = tf.reduce_mean((tf.square(predict(X) - y)))
+
+    # calculates the gradients of the loss
+    W_grad, b_grad = tape.gradient(cost, [W, b])
+
+    # updates parameters (W and b)
+    W.assign_sub(learning_rate * W_grad)
+    b.assign_sub(learning_rate * b_grad)
+    #반복을 하면서 W와 b값을 지속적으로 업데이트함
+    
+    if i % 100 == 0:
+        print("{:5} | {:10.4f}".format(i, cost.numpy()))
+    #i가 100이 될때마다 출력
+    
+epoch | cost
+    0 |  5455.5903
+  100 |    31.7443
+  200 |    30.9326
+  300 |    30.7894
+  400 |    30.6468
+  500 |    30.5055
+  600 |    30.3644
+  700 |    30.2242
+  800 |    30.0849
+  900 |    29.9463
+ 1000 |    29.8081
+ 1100 |    29.6710
+ 1200 |    29.5348
+ 1300 |    29.3989
+ 1400 |    29.2641
+ 1500 |    29.1299
+ 1600 |    28.9961
+ 1700 |    28.8634
+ 1800 |    28.7313
+ 1900 |    28.5997
+ 2000 |    28.4689
