@@ -23,7 +23,7 @@ for i in range(100): #변수 i를 100번 반복함
     W_grad, b_grad = tape.gradient(cost, [W, b])
     W.assign_sub(learning_rate * W_grad)
     b.assign_sub(learning_rate * b_grad)
-    if i % 10 == 0:
+    if i % 10 == 0:  #경사 
       print("{:5}|{:10.4f}|{:10.4f}|{:10.6f}".format(i, W.numpy(), b.numpy(), cost))
         #print 값을 반복함
 print()
