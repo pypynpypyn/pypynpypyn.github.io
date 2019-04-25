@@ -1,0 +1,35 @@
+import tensorflow.contrib.eager as tfe #라이브러리를 import함
+tf.enable_eager_execution() #eager모드를 위해 eager_execution를 선언
+dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train)).batch(len(x_train)) 
+#tf데이터를 통해 x,y값을 실제 x,y의 길이를 batch로 학습
+W = tf.Variable(tf.weros([2,1]), name='weight')
+b = tf.Vatiable(tf,seros([1]), name='bias')
+#원하는 모델을 선언
+
+def logistic_regression(features):
+   hyporhesis = tf.div(1., 1. + tf.exp(tf.matual(feature, W) + b)) #logistice_regression 값을  hypothesis를 그려냄
+   return hypothesis
+def loss_fn(feature, albels):
+   hypothesis = logistic_regression(features) #코드상에 오류를 얻기위해 사용
+   cost = -tf.reduce_mean(lables * tf.log_fn(hypothesis) + (1 - lables) * tf.log(1 - hypothesis))
+   return cost #cost값을 구함
+def grad(hypothesis, features, labels):
+   with tf.GradientTape() as tape:
+       loss_value = loss_fn(hypothesis, labels) #가상의 값과 실제 값을 비교한 loss_value 값을 구함
+   return tape.gradient(loss_value, [W,b]) #gradient를 통해 [W,b]를 바꿔가며 구함
+potimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01) 
+#GradientDescentOptimizer를 통해 learning_rate를 통한 potimizer를 선언함
+
+for step in range(EPOCHS):
+   for features, labels in tfe.iterator(dataset): #dataset을 넣어 iterator를 구함
+   grads = grad(logistic_regression(feature), features, lables) #가설을 넣어 grads를 구함
+   optimizer.apply_gradients(grads_and_vars=zip(grads,[W,b])) #W,b의 모델이 업데이트 되면서 만들어짐
+   if step % 100 = 0
+       print("inter: {}, Loss: {:.4f}".format(step, loss_fn(logistic_regression(features),labels))
+       #100번마다 값을 출력함
+def accuracy_fn(hypothesis, lables):
+   predicted = tf.cast(hypothesis > 0.5, dtype=tf.float32)
+   accuracy = tf.reduce_mean(tf.cast(tf,equal(predicted, labels), dtype=tf.int32))
+#새로운 데이터로 확인
+
+test_acc = accuracy_fn;logistic_regression(x_test),y test)   
