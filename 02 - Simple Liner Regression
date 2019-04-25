@@ -1,12 +1,12 @@
 import tensorflow as tf
 import numpy as np
 tf.enable_eager_execution()
-#tensorflow 함수들의 동작을 바꿈
+#즉시 실행을 함 
 
 # Data
 x_data = [1, 2, 3, 4, 5]
 y_data = [1, 2, 3, 4, 5]
-#데이터 자료
+#출력값과 결과값이 동일
 
 # W, b initialize
 W = tf.Variable(2.9)
@@ -14,24 +14,19 @@ b = tf.Variable(0.5)
 #W에 2.9를 지정
 #b에 0.5를 지정
 
+learning_rate = 0.01
 # W, b update
-for i in range(100): #변수 i를 100번 반복함
-    # Gradient descent 
-    with tf.GradientTape() as tape: #테이프로 실행되는 모든작업을 기록
-        hypothesis = W * x_data + b
-        cost = tf.reduce_mean(tf.square(hypothesis - y_data))
-    W_grad, b_grad = tape.gradient(cost, [W, b])
-    W.assign_sub(learning_rate * W_grad)
-    b.assign_sub(learning_rate * b_grad)
-    if i % 10 == 0:  #경사 
+for i in range(100 + 1): #gradient 값을 100번 업데이트
+    # Gradient descent #경사 하강
+    with tf.GradientTape() as tape: #w,b의 변화를 tape에 기록
+        hypothesis = W * x_data + b #하이퍼시스함수를 변환 시킴
+        cost = tf.reduce_mean(tf.square(hypothesis - y_data)) #에러 제곱의 평균
+    W_grad, b_grad = tape.gradient(cost, [W, b]) #tape에 gradient 메소드를 호출하여 미분값을 구함(기울기를 각각 반환)
+    W.assign_sub(learning_rate * W_grad) #w를 없데이트함
+    b.assign_sub(learning_rate * b_grad) #b를 업데이트함
+    if i % 10 == 0: 
       print("{:5}|{:10.4f}|{:10.4f}|{:10.6f}".format(i, W.numpy(), b.numpy(), cost))
-        #print 값을 반복함
-print()
-
-# predict
-print(W * 5 + b)
-print(W * 2.5 + b)
-#값을 
+        #i값이 10의 배수가 될때마다 프린트함
 
     0|    2.4520|    0.3760| 45.660004
    10|    1.1036|    0.0034|  0.206336
@@ -43,6 +38,17 @@ print(W * 2.5 + b)
    70|    1.0053|   -0.0192|  0.000067
    80|    1.0051|   -0.0185|  0.000063
    90|    1.0050|   -0.0179|  0.000059
-
-tf.Tensor(5.0066934, shape=(), dtype=float32)
-tf.Tensor(2.4946523, shape=(), dtype=float32)
+   
+   predict
+   
+   #hypothesis h(x) = wx + b
+   
+   #date
+   x_data = [1,2,3,4,5]
+   t_data = [1,2,3,4,5]
+   
+   print(w * 5 + b)
+   print(w * 2.5 + b)
+   
+   tf.tensor(5.0066934, shape=(), dtype=float32)
+   tf.tensor(2.4946534, shape=(), dtype=float32)
